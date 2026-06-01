@@ -1,0 +1,45 @@
+{% extends 'bookings/base.html' %}
+{% block title %}My Profile - CineSeat{% endblock %}
+{% block content %}
+<section class="container py-5">
+    <div class="profile-head">
+        <p class="eyebrow">My Profile</p>
+        <h2>{{ customer_user.username }}</h2>
+        <p>{{ customer_user.email }}</p>
+    </div>
+
+    <div class="history-list">
+        {% for booking in bookings %}
+            <article class="history-item">
+                <div>
+                    <h2>{{ booking.movie.title }}</h2>
+                    <p>{{ booking.show.show_date|date:"d M Y" }} / {{ booking.show.timing|time:"g:i A" }}</p>
+                    <strong>Seats: {{ booking.seat_number }}</strong>
+                    <div class="booking-meta">
+                        <span class="status-pill {% if booking.is_cancelled %}cancelled{% endif %}">{{ booking.get_status_display }}</span>
+                        {% if booking.payment %}
+                            <span>{{ booking.payment.get_status_display }} / Rs. {{ booking.payment.amount }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="history-actions">
+                    <time>{{ booking.booked_at|date:"d M Y, h:i A" }}</time>
+                    {% if not booking.is_cancelled %}
+                        <form method="post" action="{% url 'cancel_booking' booking.id %}">
+                            {% csrf_token %}
+                            <button class="btn btn-outline-danger btn-sm" type="submit">Cancel Ticket</button>
+                        </form>
+                    {% else %}
+                        <small>Cancelled {{ booking.cancelled_at|date:"d M Y, h:i A" }}</small>
+                    {% endif %}
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-state">
+                <h2>No bookings yet</h2>
+                <p>Your confirmed tickets will appear here.</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

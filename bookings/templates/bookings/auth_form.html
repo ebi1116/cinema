@@ -1,0 +1,31 @@
+{% extends 'bookings/base.html' %}
+{% block title %}{{ title }} - CineSeat{% endblock %}
+{% block content %}
+<section class="auth-wrap">
+    <form method="post" class="auth-card">
+        {% csrf_token %}
+        <p class="eyebrow">CineSeat</p>
+        <h1>{{ title }}</h1>
+        {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}
+                    <div class="text-danger small mt-1">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <button class="btn btn-danger w-100" type="submit">{{ button_label }}</button>
+        <p class="auth-switch">
+            {% if title == 'Login' %}
+                New here? <a href="{% url 'signup' %}">Create an account</a>
+            {% else %}
+                Already registered? <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </p>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'bookings/base.html' %}
+{% block title %}Select Seats - {{ show.movie.title }}{% endblock %}
+{% block content %}
+<section class="container py-5">
+    <div class="booking-header">
+        <a href="{% url 'movie_detail' show.movie.id %}" class="btn btn-light border">Back</a>
+        <div>
+            <p class="eyebrow">Select seats</p>
+            <h1>{{ show.movie.title }}</h1>
+            <p>{{ show.show_date|date:"d M Y" }} / {{ show.timing|time:"g:i A" }}</p>
+        </div>
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary">Home</a>
+    </div>
+
+    <form method="post" class="seat-panel">
+        {% csrf_token %}
+        <div class="screen">SCREEN</div>
+        <div class="seat-map">
+            {% for row in seats %}
+                <div class="seat-row">
+                    {% for seat in row %}
+                        <label class="seat {% if seat.booked %}booked{% endif %}">
+                            <input type="checkbox" name="seats" value="{{ seat.label }}" {% if seat.booked %}disabled{% endif %}>
+                            <span>{{ seat.label }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="seat-legend">
+            <span><i class="legend available"></i>Available</span>
+            <span><i class="legend selected"></i>Selected</span>
+            <span><i class="legend booked"></i>Booked</span>
+        </div>
+        <div class="booking-footer">
+            <strong>Selected: <span id="selectedSeats">None</span></strong>
+            <button type="submit" class="btn btn-danger px-4">Confirm Booking</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

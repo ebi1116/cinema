@@ -1,0 +1,44 @@
+{% extends 'bookings/base.html' %}
+{% block title %}Payment - CineSeat{% endblock %}
+{% block content %}
+<section class="container py-5">
+    <div class="payment-grid">
+        <div class="payment-summary">
+            <p class="eyebrow">Dummy payment</p>
+            <h1>Complete your booking</h1>
+            <p>{{ show.movie.title }} / {{ show.show_date|date:"d M Y" }} / {{ show.timing|time:"g:i A" }}</p>
+            <div class="ticket-line">
+                <span>Seats</span>
+                <strong>{{ selected_seats|join:", " }}</strong>
+            </div>
+            <div class="ticket-line">
+                <span>Price</span>
+                <strong>Rs. {{ seat_price }} x {{ selected_seats|length }}</strong>
+            </div>
+            <div class="ticket-total">
+                <span>Total</span>
+                <strong>Rs. {{ amount }}</strong>
+            </div>
+        </div>
+
+        <form method="post" class="payment-card">
+            {% csrf_token %}
+            <h2>Payment Method</h2>
+            <label class="pay-option">
+                <input type="radio" name="method" value="Dummy Card" checked>
+                <span>Dummy Card</span>
+            </label>
+            <label class="pay-option">
+                <input type="radio" name="method" value="Dummy UPI">
+                <span>Dummy UPI</span>
+            </label>
+            <label class="pay-option">
+                <input type="radio" name="method" value="Dummy Wallet">
+                <span>Dummy Wallet</span>
+            </label>
+            <button class="btn btn-danger w-100 mt-3" type="submit">Pay Rs. {{ amount }}</button>
+            <a class="btn btn-light border w-100 mt-2" href="{% url 'seat_selection' show.id %}">Back to Seats</a>
+        </form>
+    </div>
+</section>
+{% endblock %}
